@@ -1,12 +1,14 @@
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using FuryTechs.BLM.NetStandard.Interfaces;
+
 using Microsoft.AspNet.OData;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FuryTech.WebApi.Controllers
+using FuryTechs.BLM.NetStandard.Interfaces;
+
+namespace FuryTechs.WebApi.Controllers
 {
     /// <summary>
     /// Base API Controller

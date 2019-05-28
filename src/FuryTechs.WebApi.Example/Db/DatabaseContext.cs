@@ -1,8 +1,8 @@
 using System;
-using FuryTech.WebApi.Base.Db.Model;
+using FuryTechs.WebApi.Base.Db.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace FuryTech.WebApi.Base.Db
+namespace FuryTechs.WebApi.Base.Db
 {
     public class DatabaseContext : DbContext
     {

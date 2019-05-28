@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FuryTech.WebApi.Base.Db;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,7 +13,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace FuryTech.WebApi.Base
+using FuryTechs.BLM.NetStandard;
+using FuryTechs.WebApi.Base.Db;
+
+namespace FuryTechs.WebApi.Base
 {
     public class Startup
     {

@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "FuryTech.WebApi.Base": {
+    "FuryTechs.WebApi.Base": {
       "commandName": "Project",
       "launchBrowser": false,
       "launchUrl": "api/values",

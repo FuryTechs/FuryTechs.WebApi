@@ -1,6 +1,6 @@
 using System;
 
-namespace FuryTech.WebApi.Base.Db.Model
+namespace FuryTechs.WebApi.Base.Db.Model
 {
     public class User
     {
