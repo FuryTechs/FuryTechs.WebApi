@@ -36,14 +36,13 @@ namespace FuryTechs.WebApi.Example.Models.Mapping
                 .ForMember(x => x.Subject, opt => opt.MapFrom(e => e.Subject))
                 .ForMember(x => x.Text, opt => opt.MapFrom(e => e.Text))
                 .ForMember(x => x.CreatedAt, opt => opt.MapFrom(e => e.CreatedAt))
-                .ForMember(x => x.Sender, opt => opt.MapFrom(e => e.Sender))
+                .ForMember(x => x.Sender, opt => { opt.MapFrom(e => e.Sender); })
                 .ReverseMap()
                 .ForMember(x => x.Id, opt => opt.MapFrom(e => e.MessageId))
                 .ForMember(x => x.Subject, opt => opt.MapFrom(e => e.Subject))
                 .ForMember(x => x.Text, opt => opt.MapFrom(e => e.Text))
                 .ForMember(x => x.CreatedAt, opt => opt.MapFrom(e => e.CreatedAt))
                 .ForMember(x => x.Sender, opt => opt.MapFrom(e => e.Sender))
-                .ForMember(x => x.SenderId, opt => opt.MapFrom(e => e.Sender.Id))
                 ;
         }
     }

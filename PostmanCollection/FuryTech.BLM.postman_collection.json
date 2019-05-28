@@ -1,0 +1,354 @@
+{
+	"info": {
+		"_postman_id": "02c79331-fbc3-40f1-8831-bec8562c1b0e",
+		"name": "FuryTech.BLM",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/odata/users?$top=1&$orderBy=userId ASC&$count=true",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"odata",
+								"users"
+							],
+							"query": [
+								{
+									"key": "$top",
+									"value": "1"
+								},
+								{
+									"key": "$filter",
+									"value": "name eq 'Gallay'",
+									"disabled": true
+								},
+								{
+									"key": "$orderBy",
+									"value": "userId ASC"
+								},
+								{
+									"key": "$count",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/odata/users(778bb067-ba28-48fc-9a34-e9587f1939ba)",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"odata",
+								"users(778bb067-ba28-48fc-9a34-e9587f1939ba)"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Insert",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Balazs Gallay\",\n\t\"emailAddress\":\"gallayb@gmail.com\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/odata/Users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"odata",
+								"Users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"Name\": \"Balazs Gallay\",\n\t\"EmailAddress\":\"gallayb@gmail.com\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/odata/users(08d6e37d-b87a-6f06-f05f-897ec6c8b8fe)",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"odata",
+								"users(08d6e37d-b87a-6f06-f05f-897ec6c8b8fe)"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"UserId\": \"778BB067-BA28-48FC-9A34-E9587F1939BA\",\n\t\"Name\": \"Balázs Gallay\",\n\t\"EmailAddress\":\"gallayb@gmail.com\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/users/778BB067-BA28-48FC-9A34-E9587F1939BA",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users",
+								"778BB067-BA28-48FC-9A34-E9587F1939BA"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Messages",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/odata/messages?$expand=sender",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"odata",
+								"messages"
+							],
+							"query": [
+								{
+									"key": "$top",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "$filter",
+									"value": "name eq 'Gallay'",
+									"disabled": true
+								},
+								{
+									"key": "$orderBy",
+									"value": "messageId ASC",
+									"disabled": true
+								},
+								{
+									"key": "$expand",
+									"value": "sender"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/odata/messages(19fa2db1-a4f6-4d36-a4fb-b94d7670ca0d)?$count=true",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"odata",
+								"messages(19fa2db1-a4f6-4d36-a4fb-b94d7670ca0d)"
+							],
+							"query": [
+								{
+									"key": "$count",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Insert",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:5000/odata/messages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"odata",
+								"messages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:5000/odata/messages(19fa2db1-a4f6-4d36-a4fb-b94d7670ca0d)",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"odata",
+								"messages(19fa2db1-a4f6-4d36-a4fb-b94d7670ca0d)"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:5000/odata/messages(19fa2db1-a4f6-4d36-a4fb-b94d7670ca0d)",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"odata",
+								"messages(19fa2db1-a4f6-4d36-a4fb-b94d7670ca0d)"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4355f698-fe25-4d62-aac1-2e513ea20e07",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "5e035853-1c68-4a45-9d51-af7c3dd610a1",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	]
+}

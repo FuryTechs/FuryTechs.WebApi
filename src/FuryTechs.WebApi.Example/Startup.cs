@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -11,10 +12,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using FuryTechs.WebApi.Example.Db;
+using FuryTechs.WebApi.Example.Models.Dto;
 using FuryTechs.WebApi.Example.Models.Mapping;
+using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
+using Microsoft.AspNet.OData.Formatter;
+using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Net.Http.Headers;
+using Microsoft.OData.Edm;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace FuryTechs.WebApi.Example
@@ -33,7 +40,8 @@ namespace FuryTechs.WebApi.Example
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(c => { c.EnableEndpointRouting = false; })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddDbContext<DatabaseContext>(o =>
             {
@@ -45,6 +53,7 @@ namespace FuryTechs.WebApi.Example
             services.AddBlmEfCoreDefaultDbContext<DatabaseContext>();
 
             services.AddOData();
+      
             services.AddSingleton(InitializeAutoMapper());
 
             var builder = new ContainerBuilder();
@@ -81,16 +90,22 @@ namespace FuryTechs.WebApi.Example
                 // app.UseHsts();
             }
 
+            app.UseCors("Allow");
             // app.UseHttpsRedirection();
             app.UseMvc(b =>
             {
                 b.Select().Expand().Filter().OrderBy().MaxTop(100).Count();
-                b.MapRoute(
-                    name: "areas",
-                    template: "{area:exists}/{controller}/{action}/{id?}"
-                );
-                b.EnableDependencyInjection();
+                b.MapODataServiceRoute("odataApi", "odata", GetEdmModel());
             });
+        }
+
+        static IEdmModel GetEdmModel()
+        {
+            var builder = new ODataConventionModelBuilder();
+            builder.EntitySet<UserDto>("Users");
+            builder.EntitySet<MessageDto>("Messages");
+            builder.EnableLowerCamelCase();
+            return builder.GetEdmModel();
         }
     }
 }

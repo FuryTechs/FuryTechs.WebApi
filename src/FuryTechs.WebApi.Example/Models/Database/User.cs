@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using AutoMapper.Configuration.Annotations;
 using FuryTechs.WebApi.Example.Models.Dto;
+using Microsoft.OData.Edm;
 
 namespace FuryTechs.WebApi.Example.Models.Database
 {
@@ -19,6 +20,7 @@ namespace FuryTechs.WebApi.Example.Models.Database
         public string Email { get; set; }
 
         public ICollection<Message> SentMessages { get; set; }
+
         public ICollection<MessageRecipient> ReceivedMessages { get; set; }
     }
 }

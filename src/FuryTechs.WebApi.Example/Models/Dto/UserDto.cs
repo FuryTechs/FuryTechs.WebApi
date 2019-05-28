@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -10,6 +11,7 @@ namespace FuryTechs.WebApi.Example.Models.Dto
 {
     public class UserDto
     {
+        [Key]
         public Guid UserId { get; set; }
 
         public string Name { get; set; }

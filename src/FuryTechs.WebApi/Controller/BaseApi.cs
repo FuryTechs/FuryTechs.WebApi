@@ -6,6 +6,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Autofac;
 using AutoMapper;
+using AutoMapper.Extensions.ExpressionMapping;
 using AutoMapper.QueryableExtensions;
 using FuryTechs.BLM.EntityFrameworkCore;
 using FuryTechs.BLM.NetStandard.Exceptions;
@@ -47,8 +48,6 @@ namespace FuryTechs.WebApi.Controller
     /// <typeparam name="TKey">Entity's key type</typeparam>
     /// <typeparam name="TDto">Data transfer object</typeparam>
     /// <typeparam name="TDtoKey">Data transfer object's key type</typeparam>
-    [ApiController]
-    [Route("api/[controller]")]
     public abstract class BaseApi<T, TKey, TDto, TDtoKey>
         : BaseApi<T, TKey, TDto, TDtoKey, TDto, TDtoKey>
         where T : class, new()
@@ -194,6 +193,7 @@ namespace FuryTechs.WebApi.Controller
         /// DI lifetime scope
         /// </summary>
         protected ILifetimeScope LifetimeScope { get; private set; }
+
         protected IMapper Mapper { get; private set; }
 
         /// <summary>
@@ -209,31 +209,32 @@ namespace FuryTechs.WebApi.Controller
 
             Repository = lifetimeScope.Resolve<IRepository<TEntity>>();
             Mapper = lifetimeScope.Resolve<IMapper>();
-
         }
 
         #region CRUD operations
 
         #region List
+
         /// <summary>
         /// Gets an dto list of DTO entities
         /// </summary>
         /// <returns>An dto if exists</returns>
-        [HttpGet]
         [EnableQuery]
         [Produces("application/json")]
         [ProducesResponseType((int) HttpStatusCode.NotFound)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
         [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
-        public virtual async Task<IActionResult> ListAsync(ODataQueryOptions<TDtoIn> query)
+        public virtual async Task<IActionResult> Get()
         {
             var authorizedResult = await Repository.EntitiesAsync();
-            var result = query.ApplyTo(authorizedResult.ProjectTo<TDtoOut>(Mapper));
-            return Ok(result);
+            var partialResult = authorizedResult.UseAsDataSource().For<TDtoOut>();
+            return Ok(partialResult);
         }
+
         #endregion
 
         #region Get
+
         /// <summary>
         /// Gets an dto by looking up the data transfer object's key
         /// </summary>
@@ -243,35 +244,37 @@ namespace FuryTechs.WebApi.Controller
         ///         <cref>TDtoOut</cref>
         ///     </see>
         /// </response>
-        [HttpGet("{key}")]
         [EnableQuery]
         [Produces("application/json")]
         [ProducesResponseType((int) HttpStatusCode.NotFound)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
         [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
-        public virtual async Task<IActionResult> GetAsync(TDtoInKey key)
+        public virtual async Task<IActionResult> Get(TDtoInKey key)
         {
             if (await ExistsAsync(key))
             {
-                return Ok(Mapper.Map<TDtoOut>(await FindByKeyAsync(key)));
+                var partialResult = await FindByKeyAsync(key);
+
+                return Ok(partialResult.UseAsDataSource().For<TDtoOut>());
             }
 
             return NotFound();
         }
+
         #endregion
 
         #region Create
+
         /// <summary>
         /// Creates a new instance from the data transfer object
         /// by converting it to the corresponding Entity type
         /// </summary>
         /// <param name="entityDto"></param>
         /// <response code="200">Returns the entity (and updates also)</response>
-        [HttpPost]
         [Produces("application/json")]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-        public virtual async Task<IActionResult> CreateAsync([FromBody]TDtoIn entityDto)
+        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
+        public virtual async Task<IActionResult> Post([FromBody] TDtoIn entityDto)
         {
             try
             {
@@ -291,12 +294,14 @@ namespace FuryTechs.WebApi.Controller
             }
             catch (DbException)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError);
+                return StatusCode((int) HttpStatusCode.InternalServerError);
             }
         }
+
         #endregion
 
         #region Update
+
         /// <summary>
         /// Updates an dto by looking up by it's data transfer object key
         /// </summary>
@@ -305,12 +310,11 @@ namespace FuryTechs.WebApi.Controller
         /// <response code="400">The posted entity was invalid (missing field?)</response>
         /// <response code="404">The entity was not found</response>
         /// <response code="200">The update was successful</response>
-        [HttpPut("{key}")]
         [Produces("application/json")]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-        public virtual async Task<IActionResult> UpdateAsync(TDtoInKey key, [FromBody]TDtoIn dto)
+        [ProducesResponseType((int) HttpStatusCode.NotFound)]
+        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
+        public virtual async Task<IActionResult> Put(TDtoInKey key, [FromBody] TDtoIn dto)
         {
             var entity = Mapper.Map<TDtoIn, TEntity>(dto);
             if (!ModelState.IsValid || !Equals(key, GetKey(entity)))
@@ -323,15 +327,17 @@ namespace FuryTechs.WebApi.Controller
                 return NotFound();
             }
 
-            ((EfRepository<TEntity>)Repository).SetEntityState(entity, EntityState.Modified);
+            ((EfRepository<TEntity>) Repository).SetEntityState(entity, EntityState.Modified);
 
             await Repository.SaveChangesAsync();
 
             return Updated(Mapper.Map<TDtoOut>(entity));
         }
+
         #endregion
 
         #region Delete
+
         /// <summary>
         /// Deletes an dto by looking up by it's key
         /// </summary>
@@ -340,25 +346,27 @@ namespace FuryTechs.WebApi.Controller
         /// <response code="404">The entity was not found, or the user has no right to see it</response>
         [HttpDelete("{key}")]
         [Produces("application/json")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-        public virtual async Task<IActionResult> DeleteAsync(TDtoInKey key)
+        [ProducesResponseType((int) HttpStatusCode.OK)]
+        [ProducesResponseType((int) HttpStatusCode.NotFound)]
+        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
+        public virtual async Task<IActionResult> Delete(TDtoInKey key)
         {
             if (!await ExistsAsync(key))
             {
                 return NotFound();
             }
 
-            var entity = await FindByKeyAsync(key);
+            var entity = (await FindByKeyAsync(key)).First();
 
             await Repository.RemoveAsync(entity);
             await Repository.SaveChangesAsync();
 
             return NoContent();
         }
+
         #endregion
+
         #endregion
 
         /// <summary>
@@ -378,12 +386,12 @@ namespace FuryTechs.WebApi.Controller
         /// </summary>
         /// <param name="key">DTO key of dto</param>
         /// <returns>Entity</returns>
-        protected virtual async Task<TEntity> FindByKeyAsync(TDtoInKey key)
+        protected virtual async Task<IQueryable<TEntity>> FindByKeyAsync(TDtoInKey key)
         {
             var entities = await Repository.EntitiesAsync();
 
             var entity = entities.Where(GenerateExpression(key));
-            return entity.FirstOrDefault();
+            return entity;
         }
 
 

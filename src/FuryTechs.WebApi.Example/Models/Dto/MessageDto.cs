@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using FuryTechs.WebApi.Example.Models.Database;
@@ -8,6 +9,7 @@ namespace FuryTechs.WebApi.Example.Models.Dto
 {
     public class MessageDto
     {
+        [Key]
         public Guid MessageId { get; set; }
 
         public string Subject { get; set; }
@@ -16,6 +18,6 @@ namespace FuryTechs.WebApi.Example.Models.Dto
 
         public DateTimeOffset CreatedAt { get; set; }
 
-        public User Sender { get; set; }
+        public UserDto Sender { get; set; }
     }
 }
