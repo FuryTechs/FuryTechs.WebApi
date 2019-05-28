@@ -13,6 +13,8 @@ using Microsoft.Extensions.DependencyInjection;
 using FuryTechs.WebApi.Example.Db;
 using FuryTechs.WebApi.Example.Models.Mapping;
 using Microsoft.AspNet.OData.Extensions;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace FuryTechs.WebApi.Example
@@ -33,7 +35,10 @@ namespace FuryTechs.WebApi.Example
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddDbContext<DatabaseContext>(o => { o.UseInMemoryDatabase("AppDb"); });
+            services.AddDbContext<DatabaseContext>(o =>
+            {
+                o.UseMySql(Configuration.GetValue<string>("DbConnectionString"));
+            });
             services.AddHttpContextAccessor();
 
             services.AddScoped<IIdentityResolver, IdentityResolver.IdentityResolver>();
@@ -55,7 +60,6 @@ namespace FuryTechs.WebApi.Example
         /// </summary>
         public IMapper InitializeAutoMapper()
         {
-
             var c = new MapperConfigurationExpression();
             c.AddMaps(Assembly.GetExecutingAssembly());
             Mapper.Initialize(c);

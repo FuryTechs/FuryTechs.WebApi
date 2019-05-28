@@ -26,9 +26,9 @@ namespace FuryTechs.WebApi.Example.Models.Mapping
                 .ReverseMap()
                 .ForMember(x => x.Id, opt => opt.MapFrom(e => e.UserId))
                 .ForMember(x => x.Email, opt => opt.MapFrom(e => e.EmailAddress))
+                .ForMember(x => x.SentMessages, opt => opt.MapFrom(e => e.SentMessages))
                 .ForMember(x => x.FirstName, opt => opt.ConvertUsing(new FirstNameConverter(), e => e.Name))
                 .ForMember(x => x.LastName, opt => opt.ConvertUsing(new LastNameConverter(), e => e.Name))
-                .ForMember(x => x.SentMessages, opt => opt.MapFrom(e => e.SentMessages))
                 ;
 
             CreateMap<Message, MessageDto>(MemberList.None)
@@ -36,11 +36,14 @@ namespace FuryTechs.WebApi.Example.Models.Mapping
                 .ForMember(x => x.Subject, opt => opt.MapFrom(e => e.Subject))
                 .ForMember(x => x.Text, opt => opt.MapFrom(e => e.Text))
                 .ForMember(x => x.CreatedAt, opt => opt.MapFrom(e => e.CreatedAt))
+                .ForMember(x => x.Sender, opt => opt.MapFrom(e => e.Sender))
                 .ReverseMap()
                 .ForMember(x => x.Id, opt => opt.MapFrom(e => e.MessageId))
                 .ForMember(x => x.Subject, opt => opt.MapFrom(e => e.Subject))
                 .ForMember(x => x.Text, opt => opt.MapFrom(e => e.Text))
                 .ForMember(x => x.CreatedAt, opt => opt.MapFrom(e => e.CreatedAt))
+                .ForMember(x => x.Sender, opt => opt.MapFrom(e => e.Sender))
+                .ForMember(x => x.SenderId, opt => opt.MapFrom(e => e.Sender.Id))
                 ;
         }
     }

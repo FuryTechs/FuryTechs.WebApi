@@ -225,7 +225,7 @@ namespace FuryTechs.WebApi.Controller
         [ProducesResponseType((int) HttpStatusCode.NotFound)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
         [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
-        public virtual async Task<IActionResult> ListAsync(ODataQueryOptions<TDtoOut> query)
+        public virtual async Task<IActionResult> ListAsync(ODataQueryOptions<TDtoIn> query)
         {
             var authorizedResult = await Repository.EntitiesAsync();
             var result = query.ApplyTo(authorizedResult.ProjectTo<TDtoOut>(Mapper));

@@ -2,19 +2,29 @@ using System;
 using System.Collections.Generic;
 using FuryTechs.WebApi.Example.Models.Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace FuryTechs.WebApi.Example.Db
 {
     public class DatabaseContext : DbContext
     {
+        private readonly ILoggerFactory _loggerFactory;
+
         public DatabaseContext() : base()
         {
             Database.EnsureCreated();
         }
 
-        public DatabaseContext(DbContextOptions options) : base(options)
+        public DatabaseContext(DbContextOptions options, ILoggerFactory loggerFactory) : base(options)
         {
+            _loggerFactory = loggerFactory;
             Database.EnsureCreated();
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.UseLoggerFactory(_loggerFactory);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
