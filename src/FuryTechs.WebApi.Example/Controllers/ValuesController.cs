@@ -1,21 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
-using FuryTechs.WebApi.Base.Db.Model;
-using FuryTechs.WebApi.Controllers;
-using FuryTechs.BLM.NetStandard.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+using Autofac;
+using FuryTechs.WebApi.Controller;
+using FuryTechs.WebApi.Example.Models.Database;
+using FuryTechs.WebApi.Example.Models.Dto;
 
-namespace FuryTechs.WebApi.Base.Controllers
+namespace FuryTechs.WebApi.Example.Controllers
 {
-    public class ValuesController : BaseApiController<User, int>
+    public class ValuesController : BaseApi<User, int, UserDto, int>
     {
-        public ValuesController(IRepository<User> repository) : base(repository)
+        public ValuesController(ILifetimeScope scope) : base(scope)
         {
         }
 
-        protected override Expression<Func<User, int>> GetKeyValue() => x => x.Id;
+        protected override Expression<Func<User, int>> GetKeyValue => x => x.Id;
+
+        protected override Expression<Func<UserDto, int>> GetDtoInKeyValue => x => x.UserId;
     }
 }
