@@ -354,6 +354,7 @@ namespace FuryTechs.WebApi.Controller
             var entity = await FindByKeyAsync(key);
 
             await Repository.RemoveAsync(entity);
+            await Repository.SaveChangesAsync();
 
             return NoContent();
         }

@@ -10,10 +10,13 @@ namespace FuryTechs.WebApi.Example.Models.Dto
 {
     public class UserDto
     {
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
 
         public string Name { get; set; }
 
         public string EmailAddress { get; set; }
+
+        public ICollection<MessageDto> SentMessages { get; set; }
+        public ICollection<MessageDto> ReceivedMessages { get; set; }
     }
 }
