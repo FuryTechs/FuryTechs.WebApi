@@ -22,11 +22,11 @@ namespace FuryTechs.WebApi.Example.Models.Mapping
                 .ForMember(x => x.UserId, opt => opt.MapFrom(e => e.Id))
                 .ForMember(x => x.Name, opt => opt.MapFrom(e => $"{e.FirstName} {e.LastName}"))
                 .ForMember(x => x.EmailAddress, opt => opt.MapFrom(e => e.Email))
-                .ForMember(x => x.SentMessages, opt => opt.MapFrom(e => e.SentMessages))
+                .ForMember(x => x.Outbox, opt => opt.MapFrom(e => e.SentMessages))
                 .ReverseMap()
                 .ForMember(x => x.Id, opt => opt.MapFrom(e => e.UserId))
                 .ForMember(x => x.Email, opt => opt.MapFrom(e => e.EmailAddress))
-                .ForMember(x => x.SentMessages, opt => opt.MapFrom(e => e.SentMessages))
+                .ForMember(x => x.SentMessages, opt => opt.MapFrom(e => e.Outbox))
                 .ForMember(x => x.FirstName, opt => opt.ConvertUsing(new FirstNameConverter(), e => e.Name))
                 .ForMember(x => x.LastName, opt => opt.ConvertUsing(new LastNameConverter(), e => e.Name))
                 ;

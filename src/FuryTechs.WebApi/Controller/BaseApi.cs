@@ -227,8 +227,8 @@ namespace FuryTechs.WebApi.Controller
         public virtual async Task<IActionResult> Get()
         {
             var authorizedResult = await Repository.EntitiesAsync();
-            var partialResult = authorizedResult.UseAsDataSource().For<TDtoOut>();
-            return Ok(partialResult);
+            //var partialResult = .UseAsDataSource().For<TDtoOut>();
+            return Ok(Mapper.ProjectTo<TDtoIn>(authorizedResult));
         }
 
         #endregion

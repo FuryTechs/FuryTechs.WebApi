@@ -18,8 +18,7 @@ namespace FuryTechs.WebApi.Example.Models.Dto
 
         public string EmailAddress { get; set; }
 
-        public ICollection<MessageDto> SentMessages { get; set; }
+        public List<MessageDto> Outbox { get; set; }
 
-        public ICollection<MessageDto> ReceivedMessages { get; set; }
     }
 }

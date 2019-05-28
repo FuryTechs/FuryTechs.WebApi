@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Autofac;
@@ -53,7 +54,7 @@ namespace FuryTechs.WebApi.Example
             services.AddBlmEfCoreDefaultDbContext<DatabaseContext>();
 
             services.AddOData();
-      
+
             services.AddSingleton(InitializeAutoMapper());
 
             var builder = new ContainerBuilder();
@@ -102,8 +103,11 @@ namespace FuryTechs.WebApi.Example
         static IEdmModel GetEdmModel()
         {
             var builder = new ODataConventionModelBuilder();
-            builder.EntitySet<UserDto>("Users");
-            builder.EntitySet<MessageDto>("Messages");
+            builder.EntitySet<UserDto>("Users")
+                .HasManyBinding(x => x.Outbox, "Messages");
+            builder.EntitySet<MessageDto>("Messages")
+                .HasRequiredBinding(x => x.Sender, "Users");
+            builder.ModelAliasingEnabled = true;
             builder.EnableLowerCamelCase();
             return builder.GetEdmModel();
         }
