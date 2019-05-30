@@ -20,6 +20,8 @@ using Microsoft.EntityFrameworkCore.Internal;
 // ReSharper disable VirtualMemberCallInConstructor
 namespace FuryTechs.WebApi.Controller
 {
+    using FuryTechs.WebApi.Helpers;
+
     /// <summary>
     /// Base API Controller
     /// Some layer of abstraction which can be used to easily implement CRUD in Asp.NET Core MVC
@@ -221,14 +223,15 @@ namespace FuryTechs.WebApi.Controller
         /// <returns>An dto if exists</returns>
         [EnableQuery]
         [Produces("application/json")]
-        [ProducesResponseType((int) HttpStatusCode.NotFound)]
-        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
-        public virtual async Task<IActionResult> Get()
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        public virtual async Task<IActionResult> Get(ODataQueryOptions<TDtoIn> query)
         {
             var authorizedResult = await Repository.EntitiesAsync();
-            //var partialResult = .UseAsDataSource().For<TDtoOut>();
-            return Ok(Mapper.ProjectTo<TDtoIn>(authorizedResult));
+            var x = query.GetMembersToExpandNames();
+            var partialResult = authorizedResult.ProjectTo<TDtoOut>(Mapper.ConfigurationProvider, parameters: null, membersToExpand: query.GetMembersToExpandNames());
+            return Ok(partialResult);
         }
 
         #endregion
@@ -246,16 +249,16 @@ namespace FuryTechs.WebApi.Controller
         /// </response>
         [EnableQuery]
         [Produces("application/json")]
-        [ProducesResponseType((int) HttpStatusCode.NotFound)]
-        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public virtual async Task<IActionResult> Get(TDtoInKey key)
         {
             if (await ExistsAsync(key))
             {
                 var partialResult = await FindByKeyAsync(key);
 
-                return Ok(partialResult.UseAsDataSource().For<TDtoOut>());
+                return Ok(partialResult.ProjectTo<TDtoOut>(Mapper));
             }
 
             return NotFound();
@@ -272,8 +275,8 @@ namespace FuryTechs.WebApi.Controller
         /// <param name="entityDto"></param>
         /// <response code="200">Returns the entity (and updates also)</response>
         [Produces("application/json")]
-        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public virtual async Task<IActionResult> Post([FromBody] TDtoIn entityDto)
         {
             try
@@ -294,7 +297,7 @@ namespace FuryTechs.WebApi.Controller
             }
             catch (DbException)
             {
-                return StatusCode((int) HttpStatusCode.InternalServerError);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
 
@@ -311,9 +314,9 @@ namespace FuryTechs.WebApi.Controller
         /// <response code="404">The entity was not found</response>
         /// <response code="200">The update was successful</response>
         [Produces("application/json")]
-        [ProducesResponseType((int) HttpStatusCode.NotFound)]
-        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public virtual async Task<IActionResult> Put(TDtoInKey key, [FromBody] TDtoIn dto)
         {
             var entity = Mapper.Map<TDtoIn, TEntity>(dto);
@@ -327,7 +330,7 @@ namespace FuryTechs.WebApi.Controller
                 return NotFound();
             }
 
-            ((EfRepository<TEntity>) Repository).SetEntityState(entity, EntityState.Modified);
+            ((EfRepository<TEntity>)Repository).SetEntityState(entity, EntityState.Modified);
 
             await Repository.SaveChangesAsync();
 
@@ -346,10 +349,10 @@ namespace FuryTechs.WebApi.Controller
         /// <response code="404">The entity was not found, or the user has no right to see it</response>
         [HttpDelete("{key}")]
         [Produces("application/json")]
-        [ProducesResponseType((int) HttpStatusCode.OK)]
-        [ProducesResponseType((int) HttpStatusCode.NotFound)]
-        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public virtual async Task<IActionResult> Delete(TDtoInKey key)
         {
             if (!await ExistsAsync(key))

@@ -16,9 +16,10 @@ namespace FuryTechs.WebApi.Example.Models.Database
 
         public DateTimeOffset CreatedAt { get; set; }
 
+        public Guid SenderId { get; set; }
+
         public User Sender { get; set; }
 
         public ICollection<MessageRecipient> Recipients { get; set; }
-        public Guid SenderId { get; set; }
     }
 }

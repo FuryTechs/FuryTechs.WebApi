@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -18,7 +19,6 @@ namespace FuryTechs.WebApi.Example.Models.Dto
 
         public string EmailAddress { get; set; }
 
-        public List<MessageDto> Outbox { get; set; }
-
+        public virtual ICollection<MessageDto> SentMessages { get; set; }
     }
 }

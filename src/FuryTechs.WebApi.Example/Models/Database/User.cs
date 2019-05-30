@@ -19,8 +19,6 @@ namespace FuryTechs.WebApi.Example.Models.Database
 
         public string Email { get; set; }
 
-        public ICollection<Message> SentMessages { get; set; }
-
-        public ICollection<MessageRecipient> ReceivedMessages { get; set; }
+        public virtual ICollection<Message> SentMessages { get; set; }
     }
 }

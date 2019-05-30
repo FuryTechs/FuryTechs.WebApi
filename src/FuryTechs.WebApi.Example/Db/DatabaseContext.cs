@@ -29,7 +29,8 @@ namespace FuryTechs.WebApi.Example.Db
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasMany(x => x.SentMessages)
+            modelBuilder.Entity<User>()
+                .HasMany(x => x.SentMessages)
                 .WithOne(x => x.Sender)
                 .HasForeignKey(x => x.SenderId)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -38,11 +39,9 @@ namespace FuryTechs.WebApi.Example.Db
                 .HasMany(x => x.Recipients)
                 .WithOne(x => x.Message)
                 .OnDelete(DeleteBehavior.Restrict);
-            
+
             modelBuilder.Entity<MessageRecipient>()
-                .HasOne(x => x.To)
-                .WithMany(x => x.ReceivedMessages)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasOne(x => x.To);
             Seed(modelBuilder);
             base.OnModelCreating(modelBuilder);
         }

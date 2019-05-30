@@ -91,7 +91,6 @@ namespace FuryTechs.WebApi.Example
                 // app.UseHsts();
             }
 
-            app.UseCors("Allow");
             // app.UseHttpsRedirection();
             app.UseMvc(b =>
             {
@@ -103,12 +102,12 @@ namespace FuryTechs.WebApi.Example
         static IEdmModel GetEdmModel()
         {
             var builder = new ODataConventionModelBuilder();
-            builder.EntitySet<UserDto>("Users")
-                .HasManyBinding(x => x.Outbox, "Messages");
-            builder.EntitySet<MessageDto>("Messages")
-                .HasRequiredBinding(x => x.Sender, "Users");
-            builder.ModelAliasingEnabled = true;
-            builder.EnableLowerCamelCase();
+
+            builder.EntitySet<UserDto>("Users");
+            builder.EntitySet<MessageDto>("Messages");
+            builder.EntityType<UserDto>().ContainsMany(x => x.SentMessages).Expand();
+            builder.EntityType<MessageDto>().ContainsRequired(x => x.Sender).Expand();
+
             return builder.GetEdmModel();
         }
     }
